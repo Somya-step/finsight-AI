@@ -1,0 +1,507 @@
+import { useState, useRef, useCallback } from "react";
+
+const COLORS = {
+  navy: "#0A2540",
+  emerald: "#00A86B",
+  gold: "#D4AF37",
+  bg: "#F8FAFC",
+  gray: "#E5E7EB",
+  text: "#1a2e4a",
+  muted: "#64748b",
+};
+
+const S = {
+  app: { minHeight: "100vh", background: COLORS.bg, fontFamily: "'Inter', system-ui, sans-serif", color: COLORS.text },
+  nav: { background: COLORS.navy, padding: "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, position: "sticky", top: 0, zIndex: 100 },
+  logo: { color: "#fff", fontWeight: 700, fontSize: 20, display: "flex", alignItems: "center", gap: 8 },
+  logoSpan: { color: COLORS.gold },
+  navLinks: { display: "flex", gap: 24 },
+  navLink: { color: "rgba(255,255,255,0.7)", fontSize: 14, cursor: "pointer", textDecoration: "none" },
+  navBtn: { background: COLORS.emerald, color: "#fff", border: "none", borderRadius: 8, padding: "8px 18px", fontSize: 14, fontWeight: 600, cursor: "pointer" },
+};
+
+function Navbar({ onAnalyze }) {
+  return (
+    <nav style={S.nav}>
+      <div style={S.logo}>
+        <span style={{ color: COLORS.gold, fontSize: 22 }}>◈</span>
+        FinSight <span style={S.logoSpan}>AI</span>
+      </div>
+      <div style={S.navLinks}>
+        {["Features", "How It Works", "Capabilities"].map(l => (
+          <span key={l} style={S.navLink}>{l}</span>
+        ))}
+      </div>
+      <button style={S.navBtn} onClick={onAnalyze}>Analyze Report</button>
+    </nav>
+  );
+}
+
+function Hero({ onAnalyze }) {
+  return (
+    <section style={{ background: `linear-gradient(135deg, ${COLORS.navy} 0%, #1a3a5c 100%)`, padding: "80px 2rem 100px", textAlign: "center" }}>
+      <div style={{ display: "inline-block", background: "rgba(0,168,107,0.15)", border: `1px solid rgba(0,168,107,0.4)`, borderRadius: 20, padding: "6px 16px", marginBottom: 24 }}>
+        <span style={{ color: COLORS.emerald, fontSize: 13, fontWeight: 600 }}>⚡ AI-Powered Financial Intelligence</span>
+      </div>
+      <h1 style={{ color: "#fff", fontSize: 52, fontWeight: 800, lineHeight: 1.15, maxWidth: 720, margin: "0 auto 20px", letterSpacing: -1 }}>
+        Transform Financial Reports<br />into <span style={{ color: COLORS.gold }}>Investment Intelligence</span>
+      </h1>
+      <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 18, maxWidth: 560, margin: "0 auto 40px", lineHeight: 1.7 }}>
+        Upload annual reports and earnings transcripts to generate institutional-grade insights powered by Claude AI — in seconds.
+      </p>
+      <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+        <button onClick={onAnalyze} style={{ background: COLORS.emerald, color: "#fff", border: "none", borderRadius: 10, padding: "14px 32px", fontSize: 16, fontWeight: 700, cursor: "pointer" }}>
+          Analyze a Report →
+        </button>
+        <button style={{ background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 10, padding: "14px 32px", fontSize: 16, cursor: "pointer" }}>
+          View Demo
+        </button>
+      </div>
+      <div style={{ display: "flex", justifyContent: "center", gap: 40, marginTop: 56 }}>
+        {[["500+", "Reports Analyzed"], ["98%", "Accuracy Rate"], ["10s", "Avg. Analysis Time"]].map(([v, l]) => (
+          <div key={l} style={{ textAlign: "center" }}>
+            <div style={{ color: COLORS.gold, fontSize: 28, fontWeight: 800 }}>{v}</div>
+            <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 13 }}>{l}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Features() {
+  const items = [
+    { icon: "📊", title: "Revenue Analysis", desc: "Deep-dive revenue breakdown, segment analysis, and growth trajectory mapping." },
+    { icon: "🔍", title: "Risk Identification", desc: "AI-powered detection of financial, operational, and market risks from filings." },
+    { icon: "🧠", title: "Sentiment Scoring", desc: "Management tone analysis and earnings call sentiment quantification." },
+    { icon: "📈", title: "SWOT Generation", desc: "Automated SWOT matrix built from fundamental analysis of the business." },
+    { icon: "💡", title: "Growth Opportunities", desc: "Identify expansion signals, new markets, and strategic pivots in the data." },
+    { icon: "🎯", title: "Investment Perspective", desc: "AI-generated, investor-grade thesis and buy/sell/hold signal." },
+  ];
+  return (
+    <section style={{ padding: "72px 2rem", maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ textAlign: "center", marginBottom: 48 }}>
+        <h2 style={{ fontSize: 34, fontWeight: 800, color: COLORS.navy, marginBottom: 12 }}>Institutional-Grade Analysis</h2>
+        <p style={{ color: COLORS.muted, fontSize: 16 }}>Everything a research analyst needs, delivered by AI.</p>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
+        {items.map(({ icon, title, desc }) => (
+          <div key={title} style={{ background: "#fff", borderRadius: 14, border: `1px solid ${COLORS.gray}`, padding: "24px 28px" }}>
+            <div style={{ fontSize: 28, marginBottom: 12 }}>{icon}</div>
+            <h3 style={{ fontWeight: 700, fontSize: 16, color: COLORS.navy, marginBottom: 8 }}>{title}</h3>
+            <p style={{ color: COLORS.muted, fontSize: 14, lineHeight: 1.6 }}>{desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function HowItWorks() {
+  const steps = [
+    { n: "01", title: "Upload PDF", desc: "Drag & drop your annual report or earnings transcript" },
+    { n: "02", title: "AI Extraction", desc: "Claude reads and understands the full financial document" },
+    { n: "03", title: "Deep Analysis", desc: "10 structured analyses generated across all financial dimensions" },
+    { n: "04", title: "Export Insights", desc: "Download your professional investment summary" },
+  ];
+  return (
+    <section style={{ background: COLORS.navy, padding: "72px 2rem" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <h2 style={{ fontSize: 34, fontWeight: 800, color: "#fff", marginBottom: 12 }}>How It Works</h2>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16 }}>From raw PDF to investor-ready insights in four steps.</p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 24 }}>
+          {steps.map(({ n, title, desc }) => (
+            <div key={n} style={{ textAlign: "center", padding: "28px 20px" }}>
+              <div style={{ width: 52, height: 52, borderRadius: "50%", background: "rgba(0,168,107,0.15)", border: `2px solid ${COLORS.emerald}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", color: COLORS.emerald, fontWeight: 800, fontSize: 15 }}>{n}</div>
+              <h3 style={{ color: "#fff", fontWeight: 700, fontSize: 16, marginBottom: 8 }}>{title}</h3>
+              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.6 }}>{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function UploadZone({ onUpload, loading }) {
+  const [drag, setDrag] = useState(false);
+  const [file, setFile] = useState(null);
+  const [text, setText] = useState("");
+  const fileRef = useRef();
+
+  const readFile = (f) => {
+    setFile(f);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const arr = new Uint8Array(e.target.result);
+      let str = "";
+      for (let i = 0; i < Math.min(arr.length, 60000); i++) {
+        if (arr[i] > 31 && arr[i] < 127) str += String.fromCharCode(arr[i]);
+        else if (arr[i] === 10 || arr[i] === 13) str += "\n";
+      }
+      str = str.replace(/[^\x20-\x7E\n]/g, " ").replace(/ {3,}/g, " ").trim();
+      setText(str.slice(0, 12000));
+    };
+    reader.readAsArrayBuffer(f);
+  };
+
+  const onDrop = useCallback((e) => {
+    e.preventDefault(); setDrag(false);
+    const f = e.dataTransfer.files[0];
+    if (f && f.type === "application/pdf") readFile(f);
+  }, []);
+
+  return (
+    <div style={{ maxWidth: 680, margin: "0 auto" }}>
+      <div
+        onDrop={onDrop}
+        onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
+        onDragLeave={() => setDrag(false)}
+        onClick={() => fileRef.current.click()}
+        style={{
+          border: `2px dashed ${drag ? COLORS.emerald : COLORS.gray}`,
+          borderRadius: 16, padding: "48px 32px", textAlign: "center", cursor: "pointer",
+          background: drag ? "rgba(0,168,107,0.04)" : "#fff", transition: "all 0.2s"
+        }}
+      >
+        <div style={{ fontSize: 40, marginBottom: 16 }}>📂</div>
+        <h3 style={{ fontWeight: 700, color: COLORS.navy, marginBottom: 8 }}>
+          {file ? file.name : "Drop your PDF here"}
+        </h3>
+        <p style={{ color: COLORS.muted, fontSize: 14 }}>
+          {file ? `${(file.size / 1024).toFixed(0)} KB ready` : "Annual reports, earnings transcripts, 10-K, 10-Q files"}
+        </p>
+        <input ref={fileRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={(e) => { if (e.target.files[0]) readFile(e.target.files[0]); }} />
+      </div>
+
+      <div style={{ marginTop: 16 }}>
+        <label style={{ fontSize: 13, color: COLORS.muted, fontWeight: 600 }}>Or paste report text / description:</label>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Paste annual report text, financial highlights, or describe a company for demo analysis…"
+          style={{ width: "100%", minHeight: 120, marginTop: 8, borderRadius: 10, border: `1px solid ${COLORS.gray}`, padding: "12px 14px", fontSize: 14, color: COLORS.text, resize: "vertical", boxSizing: "border-box" }}
+        />
+      </div>
+
+      <button
+        onClick={() => onUpload(text || `Demo analysis for a large-cap technology company with strong revenue growth, cloud segment expansion, and some regulatory risks. Analyze as if this is a real annual report with the following context: Strong revenue growth of 15% YoY, expanding margins, cloud segment leading growth, some regulatory headwinds in EU, robust cash generation, dividend growth.`)}
+        disabled={loading}
+        style={{
+          width: "100%", marginTop: 16, background: loading ? "#94a3b8" : COLORS.emerald,
+          color: "#fff", border: "none", borderRadius: 10, padding: "14px", fontSize: 16,
+          fontWeight: 700, cursor: loading ? "not-allowed" : "pointer"
+        }}
+      >
+        {loading ? "🔄 Analyzing with AI…" : "⚡ Generate Financial Analysis"}
+      </button>
+    </div>
+  );
+}
+
+function KpiCard({ label, value, sub, color }) {
+  return (
+    <div style={{ background: "#fff", borderRadius: 12, border: `1px solid ${COLORS.gray}`, padding: "20px 22px" }}>
+      <div style={{ fontSize: 12, color: COLORS.muted, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 }}>{label}</div>
+      <div style={{ fontSize: 26, fontWeight: 800, color: color || COLORS.navy, marginBottom: 4 }}>{value}</div>
+      {sub && <div style={{ fontSize: 12, color: COLORS.muted }}>{sub}</div>}
+    </div>
+  );
+}
+
+function Section({ title, icon, children }) {
+  return (
+    <div style={{ background: "#fff", borderRadius: 14, border: `1px solid ${COLORS.gray}`, padding: "24px 28px", marginBottom: 20 }}>
+      <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.navy, marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
+        <span>{icon}</span>{title}
+      </h3>
+      {children}
+    </div>
+  );
+}
+
+function SentimentGauge({ score }) {
+  const pct = Math.max(0, Math.min(100, score));
+  const color = pct > 65 ? COLORS.emerald : pct > 40 ? COLORS.gold : "#ef4444";
+  const label = pct > 65 ? "Positive" : pct > 40 ? "Neutral" : "Negative";
+  return (
+    <div style={{ textAlign: "center" }}>
+      <div style={{ position: "relative", display: "inline-block", width: 160, height: 80 }}>
+        <svg width="160" height="90" viewBox="0 0 160 90">
+          <path d="M 20 80 A 60 60 0 0 1 140 80" fill="none" stroke={COLORS.gray} strokeWidth="12" strokeLinecap="round" />
+          <path d="M 20 80 A 60 60 0 0 1 140 80" fill="none" stroke={color} strokeWidth="12" strokeLinecap="round"
+            strokeDasharray={`${(pct / 100) * 188} 188`} />
+          <text x="80" y="72" textAnchor="middle" fontSize="22" fontWeight="800" fill={color}>{pct}</text>
+          <text x="80" y="86" textAnchor="middle" fontSize="12" fill={COLORS.muted}>{label}</text>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+function SwotMatrix({ swot }) {
+  const q = [
+    { label: "Strengths", color: "#dcfce7", text: "#14532d", items: swot.strengths },
+    { label: "Weaknesses", color: "#fef3c7", text: "#78350f", items: swot.weaknesses },
+    { label: "Opportunities", color: "#dbeafe", text: "#1e3a8a", items: swot.opportunities },
+    { label: "Threats", color: "#fee2e2", text: "#7f1d1d", items: swot.threats },
+  ];
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      {q.map(({ label, color, text, items }) => (
+        <div key={label} style={{ background: color, borderRadius: 10, padding: "16px 18px" }}>
+          <div style={{ fontWeight: 700, fontSize: 13, color: text, marginBottom: 10 }}>{label}</div>
+          {(items || []).map((it, i) => (
+            <div key={i} style={{ fontSize: 13, color: text, opacity: 0.85, marginBottom: 6, display: "flex", gap: 6 }}>
+              <span>•</span><span>{it}</span>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RiskBar({ risks }) {
+  const colors = { High: "#ef4444", Medium: COLORS.gold, Low: COLORS.emerald };
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {(risks || []).map(({ risk, level }, i) => (
+        <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{ background: colors[level] || COLORS.muted, color: "#fff", fontSize: 11, fontWeight: 700, borderRadius: 4, padding: "2px 8px", minWidth: 52, textAlign: "center" }}>{level}</span>
+          <span style={{ fontSize: 14, color: COLORS.text }}>{risk}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MetricsList({ metrics }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10 }}>
+      {(metrics || []).map(({ name, value }, i) => (
+        <div key={i} style={{ background: COLORS.bg, borderRadius: 8, padding: "12px 14px" }}>
+          <div style={{ fontSize: 12, color: COLORS.muted, marginBottom: 4 }}>{name}</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: COLORS.navy }}>{value}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Dashboard({ data, onReset }) {
+  const downloadReport = () => {
+    const txt = `FINSIGHT AI — FINANCIAL ANALYSIS REPORT\n${"=".repeat(50)}\n\n` +
+      Object.entries(data).map(([k, v]) => `${k.toUpperCase()}\n${"-".repeat(30)}\n${JSON.stringify(v, null, 2)}\n`).join("\n");
+    const blob = new Blob([txt], { type: "text/plain" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "finsight_report.txt"; a.click();
+  };
+
+  const kpis = [
+    { label: "Revenue Growth", value: data.kpis?.revenueGrowth || "N/A", color: COLORS.emerald },
+    { label: "Net Margin", value: data.kpis?.netMargin || "N/A", color: COLORS.navy },
+    { label: "Sentiment Score", value: data.kpis?.sentimentScore ? `${data.kpis.sentimentScore}/100` : "N/A", color: COLORS.gold },
+    { label: "Investment Signal", value: data.kpis?.signal || "N/A", color: data.kpis?.signal === "BUY" ? COLORS.emerald : data.kpis?.signal === "SELL" ? "#ef4444" : COLORS.gold },
+  ];
+
+  return (
+    <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
+        <div>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: COLORS.navy, marginBottom: 4 }}>Analysis Report</h2>
+          <p style={{ color: COLORS.muted, fontSize: 14 }}>Generated by FinSight AI · {new Date().toLocaleDateString()}</p>
+        </div>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button onClick={downloadReport} style={{ background: COLORS.navy, color: "#fff", border: "none", borderRadius: 8, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>⬇ Export</button>
+          <button onClick={onReset} style={{ background: "#fff", color: COLORS.navy, border: `1px solid ${COLORS.gray}`, borderRadius: 8, padding: "9px 18px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>New Analysis</button>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14, marginBottom: 24 }}>
+        {kpis.map((k) => <KpiCard key={k.label} {...k} />)}
+      </div>
+
+      <Section title="Executive Summary" icon="📋">
+        <p style={{ fontSize: 15, color: COLORS.text, lineHeight: 1.8 }}>{data.executiveSummary}</p>
+      </Section>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+        <Section title="Revenue Insights" icon="📈">
+          <p style={{ fontSize: 14, color: COLORS.text, lineHeight: 1.7 }}>{data.revenueInsights}</p>
+        </Section>
+        <Section title="Profitability Analysis" icon="💰">
+          <p style={{ fontSize: 14, color: COLORS.text, lineHeight: 1.7 }}>{data.profitabilityAnalysis}</p>
+        </Section>
+      </div>
+
+      <Section title="Sentiment Analysis" icon="🎯">
+        <div style={{ display: "flex", gap: 32, alignItems: "center", flexWrap: "wrap" }}>
+          <SentimentGauge score={data.kpis?.sentimentScore || 65} />
+          <p style={{ flex: 1, fontSize: 14, color: COLORS.text, lineHeight: 1.7, minWidth: 200 }}>{data.sentimentAnalysis}</p>
+        </div>
+      </Section>
+
+      <Section title="SWOT Analysis" icon="🔲">
+        <SwotMatrix swot={data.swot || {}} />
+      </Section>
+
+      <Section title="Risk Factors" icon="⚠️">
+        <RiskBar risks={data.riskFactors} />
+      </Section>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+        <Section title="Growth Opportunities" icon="🚀">
+          <p style={{ fontSize: 14, color: COLORS.text, lineHeight: 1.7 }}>{data.growthOpportunities}</p>
+        </Section>
+        <Section title="Future Outlook" icon="🔭">
+          <p style={{ fontSize: 14, color: COLORS.text, lineHeight: 1.7 }}>{data.futureOutlook}</p>
+        </Section>
+      </div>
+
+      <Section title="Key Financial Metrics" icon="📊">
+        <MetricsList metrics={data.keyMetrics} />
+      </Section>
+
+      <Section title="AI Investment Perspective" icon="🤖">
+        <div style={{ background: `linear-gradient(135deg, ${COLORS.navy}08 0%, rgba(0,168,107,0.06) 100%)`, border: `1px solid rgba(0,168,107,0.2)`, borderRadius: 10, padding: "18px 20px" }}>
+          <p style={{ fontSize: 15, color: COLORS.text, lineHeight: 1.8, margin: 0 }}>{data.investmentPerspective}</p>
+          <div style={{ marginTop: 14, padding: "10px 14px", background: data.kpis?.signal === "BUY" ? "#dcfce7" : data.kpis?.signal === "SELL" ? "#fee2e2" : "#fef3c7", borderRadius: 8, display: "inline-block" }}>
+            <span style={{ fontWeight: 800, fontSize: 15, color: data.kpis?.signal === "BUY" ? "#14532d" : data.kpis?.signal === "SELL" ? "#7f1d1d" : "#78350f" }}>
+              Signal: {data.kpis?.signal || "HOLD"} — {data.kpis?.conviction || "Medium"} Conviction
+            </span>
+          </div>
+        </div>
+      </Section>
+    </div>
+  );
+}
+
+const PROMPT = (text) => `You are a senior buy-side equity research analyst at a top-tier investment bank. Analyze the following financial document text and return a JSON object with this exact structure:
+
+{
+  "executiveSummary": "3-4 sentence institutional-grade summary of the company and its financial performance",
+  "revenueInsights": "2-3 sentence analysis of revenue trends, growth drivers, and segment performance",
+  "profitabilityAnalysis": "2-3 sentence analysis of margins, earnings quality, and profitability trajectory",
+  "sentimentAnalysis": "2-3 sentences on management tone, forward guidance language, and overall sentiment",
+  "growthOpportunities": "2-3 sentences on key growth catalysts, expansion opportunities, and strategic initiatives",
+  "futureOutlook": "2-3 sentences on guidance, macro tailwinds/headwinds, and 12-month outlook",
+  "investmentPerspective": "3-4 sentence investment thesis with valuation perspective",
+  "swot": {
+    "strengths": ["strength 1", "strength 2", "strength 3"],
+    "weaknesses": ["weakness 1", "weakness 2"],
+    "opportunities": ["opportunity 1", "opportunity 2", "opportunity 3"],
+    "threats": ["threat 1", "threat 2"]
+  },
+  "riskFactors": [
+    {"risk": "Risk description", "level": "High"},
+    {"risk": "Risk description", "level": "Medium"},
+    {"risk": "Risk description", "level": "Low"},
+    {"risk": "Risk description", "level": "Medium"}
+  ],
+  "keyMetrics": [
+    {"name": "Revenue Growth", "value": "X%"},
+    {"name": "Gross Margin", "value": "X%"},
+    {"name": "EBITDA Margin", "value": "X%"},
+    {"name": "FCF Yield", "value": "X%"},
+    {"name": "P/E Ratio", "value": "Xx"},
+    {"name": "Debt/Equity", "value": "X.Xx"}
+  ],
+  "kpis": {
+    "revenueGrowth": "+X% YoY",
+    "netMargin": "X%",
+    "sentimentScore": 72,
+    "signal": "BUY",
+    "conviction": "High"
+  }
+}
+
+Document text:
+${text.slice(0, 10000)}
+
+Return ONLY the JSON object, no markdown, no explanation.`;
+
+export default function App() {
+  const [view, setView] = useState("landing");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState("");
+
+  const analyze = async (text) => {
+    setLoading(true); setError("");
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: PROMPT(text) }]
+        })
+      });
+      const data = await res.json();
+      const raw = data.content?.[0]?.text || "";
+      const clean = raw.replace(/```json|```/g, "").trim();
+      const parsed = JSON.parse(clean);
+      setResult(parsed); setView("dashboard");
+    } catch (e) {
+      setError("Analysis failed. Please try again or paste text directly.");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div style={S.app}>
+      <Navbar onAnalyze={() => setView("upload")} />
+
+      {view === "landing" && (
+        <>
+          <Hero onAnalyze={() => setView("upload")} />
+          <Features />
+          <HowItWorks />
+          <section style={{ padding: "60px 2rem", textAlign: "center", background: "#fff" }}>
+            <h2 style={{ fontSize: 30, fontWeight: 800, color: COLORS.navy, marginBottom: 12 }}>Ready to analyze your first report?</h2>
+            <p style={{ color: COLORS.muted, marginBottom: 28 }}>Upload any PDF or paste text — results in under 30 seconds.</p>
+            <button onClick={() => setView("upload")} style={{ background: COLORS.emerald, color: "#fff", border: "none", borderRadius: 10, padding: "14px 36px", fontSize: 16, fontWeight: 700, cursor: "pointer" }}>
+              Start Free Analysis →
+            </button>
+          </section>
+        </>
+      )}
+
+      {view === "upload" && (
+        <section style={{ padding: "60px 2rem", maxWidth: 760, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <h2 style={{ fontSize: 28, fontWeight: 800, color: COLORS.navy, marginBottom: 8 }}>Upload Financial Report</h2>
+            <p style={{ color: COLORS.muted }}>Supports annual reports, 10-K, 10-Q, earnings transcripts</p>
+          </div>
+          {error && <div style={{ background: "#fee2e2", color: "#7f1d1d", borderRadius: 8, padding: "12px 16px", marginBottom: 16, fontSize: 14 }}>{error}</div>}
+          <UploadZone onUpload={analyze} loading={loading} />
+          {loading && (
+            <div style={{ textAlign: "center", marginTop: 32 }}>
+              <div style={{ display: "inline-flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
+                {["Extracting document text…", "Running financial analysis…", "Generating investment insights…"].map((s, i) => (
+                  <div key={i} style={{ fontSize: 14, color: COLORS.muted, opacity: 0.7 + i * 0.1 }}>{s}</div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {view === "dashboard" && result && (
+        <section style={{ padding: "40px 2rem" }}>
+          <Dashboard data={result} onReset={() => { setView("upload"); setResult(null); }} />
+        </section>
+      )}
+
+      <footer style={{ background: COLORS.navy, padding: "32px 2rem", marginTop: 40 }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+          <div style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>FinSight <span style={{ color: COLORS.gold }}>AI</span></div>
+          <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 13 }}>© 2024 FinSight AI · For educational and analytical purposes only · Not financial advice</div>
+        </div>
+      </footer>
+    </div>
+  );
+}
